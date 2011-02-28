@@ -1,0 +1,14 @@
+.classpath
+.project
+.settings
+.buildpath
+build.xml
+/*.launch
+/*.tmproj 
+*~
+*.swp
+*.orig
+cache/
+logs/
+/var/
+.pydevproject
