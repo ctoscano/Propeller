@@ -3,13 +3,15 @@
  */ 
 
 config = {
-    tracker_port:        8888,
+    tracker_port:       8888,
     
-    mongodb_host:        '127.0.0.1',
-    mongodb_port:         27017,
+    mongodb_host:       '127.0.0.1',
+    mongodb_port:       27017,
     
-    db_name:             'www',
-    collection_name:     'log_summary',
+    db_name:            'www',
+    collection_name:    'log_summary',
+    
+    nodes:              4,
     
     // Fields not used yet
     fields: [
