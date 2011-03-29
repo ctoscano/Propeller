@@ -8,7 +8,7 @@ config = {
     mongodb_host:       '127.0.0.1',
     mongodb_port:       27017,
     
-    db_name:            'www',
+    db_names:           ['www'],
     collection_name:    'log_summary',
     
     nodes:              4,

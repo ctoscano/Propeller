@@ -23,18 +23,35 @@ var http = require('http'),
     mongo = require('mongodb');
 var Propeller = require('propeller/propeller').Propeller;
 
-// Create DB
-db = new mongo.Db(config.db_name, 
-        new mongo.Server(config.mongodb_host, config.mongodb_port, {}), {});
+var db_names = config.db_names.concat();
 
-db.addListener("error", function(error) {
-  console.log("Error connecting to mongo -- perhaps it isn't running?");
-});
+function setup(dbs_done, dbs_left, callback) {
+    if (dbs_left.length != 0) {
+        var db_name = dbs_left.shift();
+        // Create DB
+        db = new mongo.Db(db_name, 
+                new mongo.Server(config.mongodb_host, config.mongodb_port, {}), {});
+        
+        // Handle Connection Error
+        db.addListener("error", function(error) {
+                console.log("Error connecting to mongo -- perhaps it isn't running?");
+            });
+        
+        // Get database
+        db.open(function(p_db) {
+            dbs_done[db_name] = db;
+            setup(dbs_done, dbs_left, callback);
+        });
+    
+    } else {
+        callback(dbs_done);
+    }
+}
 
-// Open Persistant Connection
-db.open(function(p_db) {
+// Open Persistant Connections
+setup({}, db_names, function(dbs) {
     var propeller = new Propeller(config);
-    propeller.init(db, function() {
+    propeller.init(dbs, function() {
         var server = http.createServer(function (req, res) {
             try {
                 propeller.handleTrackerRequest(req, res);
@@ -47,7 +64,7 @@ db.open(function(p_db) {
            port:            tracker_port,
            nodes:           num_nodes,
            masterListen:    false,
-           restartChildren: false
+           restartChildren: true
         }, server);
 
         if (nodes.isMaster) {
@@ -57,3 +74,4 @@ db.open(function(p_db) {
         }
     });
 });
+
