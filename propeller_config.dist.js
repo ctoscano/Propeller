@@ -13,6 +13,8 @@ config = {
     
     nodes:              4,
     
+    cache_max:          10,
+    
     // Fields not used yet
     fields: [
                 {

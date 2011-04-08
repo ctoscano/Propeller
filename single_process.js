@@ -62,6 +62,11 @@ setup({}, db_names, function(dbs) {
         
         server.listen(tracker_port);
         console.log('Tracker running on port ' + tracker_port);
+        
+        process.on('SIGINT', function() {
+          propeller.config.cache_max = 0; // Turn off caching
+          propeller.runCachedIncriments(true, process.exit);
+        });
     });
 });
 

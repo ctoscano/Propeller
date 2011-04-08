@@ -71,6 +71,21 @@ setup({}, db_names, function(dbs) {
             console.log('Starting ' + num_nodes + ' trackers listening  on port ' + tracker_port + '.');
         } else {
             console.log('Tracker up');
+
+            var terminated = false;
+            ["SIGINT", "SIGTERM"].forEach(function(signal){
+                process.on(signal, function() {
+                    if (!terminated) {
+                        terminated = true;
+                        propeller.config.cache_max = 0; // Turn off caching
+                        propeller.runCachedIncriments(true, function() {
+                            process.exit();
+                            });
+                    }
+                    return
+                 });
+            });
+             
         }
     });
 });
