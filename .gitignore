@@ -12,3 +12,4 @@ cache/
 logs/
 /var/
 .pydevproject
+propeller_config.js
